@@ -17,8 +17,10 @@ with st.sidebar:
 
 if uploaded_file is not None:
     df = load_and_prepare(uploaded_file)
+    st.sidebar.success(f"Caricato: {uploaded_file.name}")
 else:
     df = get_df()
+    st.sidebar.info("Caricando dataset locale da `data/`. Se non c'è un file, usa il sample oppure caricane uno.")
 
 if df.empty:
     st.sidebar.warning(

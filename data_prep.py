@@ -1,9 +1,13 @@
 import glob
 import io
 import os
+from pathlib import Path
 from typing import Optional
 
 import pandas as pd
+
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
 
 DEFAULT_COLUMNS = [
     "settore_codice",
@@ -71,7 +75,7 @@ def _normalize_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 def load_and_prepare(source: Optional[object] = None) -> pd.DataFrame:
     if source is None:
-        candidates = sorted(glob.glob("data/*.csv") + glob.glob("data/*.xlsx"))
+        candidates = sorted(DATA_DIR.glob("*.csv")) + sorted(DATA_DIR.glob("*.xlsx"))
         if not candidates:
             return _empty_dataframe()
         source = candidates[0]
@@ -95,6 +99,9 @@ def load_and_prepare(source: Optional[object] = None) -> pd.DataFrame:
             df = _empty_dataframe()
     else:
         path = str(source)
+        if not os.path.isabs(path):
+            path = str(BASE_DIR / path)
+
         if path.lower().endswith(".csv"):
             df = pd.read_csv(path)
         elif path.lower().endswith(".xlsx"):
