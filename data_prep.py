@@ -23,8 +23,33 @@ DEFAULT_COLUMNS = [
     "is_venduto",
 ]
 
+COLUMN_MAPPINGS = {
+    "settore_codice": ["industry", "settore", "sector", "settore_codice"],
+    "LOB": ["lob", "line of business", "lob"],
+    "team": ["team", "team name", "team"],
+    "Servizi A&M": ["servizi", "services", "servizi a&m", "servizi a & m"],
+    "stato": ["stato", "status", "state", "stato"],
+    "cliente_codice": ["cliente", "client", "customer", "cliente_codice", "client code", "customer code"],
+    "ricavo_2026": ["ricavo 2026", "revenue 2026", "ricavo_2026"],
+    "ricavo_2025": ["ricavo 2025", "revenue 2025", "ricavo_2025"],
+    "pipeline_lorda_2026": ["pipeline lorda 2026", "gross pipeline 2026", "pipeline_lorda_2026"],
+    "pipeline_pesata_2026": ["pipeline pesata 2026", "weighted pipeline 2026", "pipeline_pesata_2026"],
+    "is_venduto": ["is venduto", "sold", "is_venduto", "venduto"],
+}
 
-def _empty_dataframe() -> pd.DataFrame:
+
+def _map_columns(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+    df.columns = df.columns.str.strip().str.lower()
+    rename_dict = {}
+    for target, alternatives in COLUMN_MAPPINGS.items():
+        for alt in alternatives:
+            alt_lower = alt.lower()
+            if alt_lower in df.columns and target not in rename_dict:
+                rename_dict[alt_lower] = target
+                break
+    df = df.rename(columns=rename_dict)
+    return df
     df = pd.DataFrame(
         {
             "settore_codice": pd.Series(dtype="string"),
@@ -109,6 +134,7 @@ def load_and_prepare(source: Optional[object] = None) -> pd.DataFrame:
         else:
             df = _empty_dataframe()
 
+    df = _map_columns(df)
     return _normalize_dataframe(df)
 
 
