@@ -15,5 +15,11 @@ A simple Streamlit app template for you to modify!
 2. Run the app
 
    ```
+   $ streamlit run app.py
+   ```
+
+   If your environment expects `streamlit_app.py`, you can also use:
+
+   ```
    $ streamlit run streamlit_app.py
    ```
