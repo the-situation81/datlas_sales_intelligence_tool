@@ -40,6 +40,8 @@ if uploaded_file is not None:
         st.session_state.teams = []
         st.session_state.servizi = []
         st.session_state.stati = []
+    st.sidebar.write("Data preview:")
+    st.sidebar.dataframe(df.head())
 else:
     df = get_df()
     st.sidebar.info("Caricando dataset locale da `data/`. Se non c'è un file, usa il sample oppure caricane uno.")
@@ -85,6 +87,8 @@ if servizi:
     fdf = fdf[fdf["Servizi A&M"].astype(str).isin(servizi)]
 if stati:
     fdf = fdf[fdf["stato"].astype(str).isin(stati)]
+
+st.sidebar.write(f"Filtered rows: {len(fdf)}")
 
 # ==============================
 # KPI ROW
