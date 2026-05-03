@@ -18,6 +18,14 @@ with st.sidebar:
 if uploaded_file is not None:
     df = load_and_prepare(uploaded_file)
     st.sidebar.success(f"Caricato: {uploaded_file.name}")
+    # Clear filters when new file is uploaded
+    if "filters_reset" not in st.session_state or st.session_state.filters_reset != uploaded_file.name:
+        st.session_state.filters_reset = uploaded_file.name
+        st.session_state.settori = []
+        st.session_state.lobs = []
+        st.session_state.teams = []
+        st.session_state.servizi = []
+        st.session_state.stati = []
 else:
     df = get_df()
     st.sidebar.info("Caricando dataset locale da `data/`. Se non c'è un file, usa il sample oppure caricane uno.")
@@ -42,11 +50,11 @@ teams_lista = sorted(df["team"].dropna().astype(str).unique().tolist())
 servizi_lista = sorted(df["Servizi A&M"].dropna().astype(str).unique().tolist())
 stati_lista = sorted(df["stato"].dropna().astype(str).unique().tolist())
 
-settori = st.sidebar.multiselect("Industry (settore_codice)", settori_lista)
-lobs = st.sidebar.multiselect("LOB", lobs_lista)
-teams = st.sidebar.multiselect("Team", teams_lista)
-servizi = st.sidebar.multiselect("Servizi A&M", servizi_lista)
-stati = st.sidebar.multiselect("Stato", stati_lista, default=stati_lista)
+settori = st.sidebar.multiselect("Industry (settore_codice)", settori_lista, key="settori")
+lobs = st.sidebar.multiselect("LOB", lobs_lista, key="lobs")
+teams = st.sidebar.multiselect("Team", teams_lista, key="teams")
+servizi = st.sidebar.multiselect("Servizi A&M", servizi_lista, key="servizi")
+stati = st.sidebar.multiselect("Stato", stati_lista, key="stati")
 
 # ==============================
 # APPLY FILTERS
