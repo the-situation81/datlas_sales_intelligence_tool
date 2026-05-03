@@ -1,5 +1,6 @@
 import glob
 import os
+from typing import Optional
 
 import pandas as pd
 
@@ -67,18 +68,29 @@ def _normalize_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     return df[DEFAULT_COLUMNS]
 
 
-def load_and_prepare() -> pd.DataFrame:
-    candidates = sorted(glob.glob("data/*.csv") + glob.glob("data/*.xlsx"))
-    if candidates:
-        path = candidates[0]
+def load_and_prepare(source: Optional[object] = None) -> pd.DataFrame:
+    if source is None:
+        candidates = sorted(glob.glob("data/*.csv") + glob.glob("data/*.xlsx"))
+        if not candidates:
+            return _empty_dataframe()
+        source = candidates[0]
+
+    if hasattr(source, "read"):
+        filename = getattr(source, "name", "").lower()
+        if filename.endswith(".csv"):
+            df = pd.read_csv(source)
+        elif filename.endswith(".xlsx"):
+            df = pd.read_excel(source)
+        else:
+            df = _empty_dataframe()
+    else:
+        path = str(source)
         if path.lower().endswith(".csv"):
             df = pd.read_csv(path)
         elif path.lower().endswith(".xlsx"):
             df = pd.read_excel(path)
         else:
             df = _empty_dataframe()
-    else:
-        df = _empty_dataframe()
 
     return _normalize_dataframe(df)
 

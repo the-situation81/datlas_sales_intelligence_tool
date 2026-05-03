@@ -12,7 +12,22 @@ st.title("Datlas – Sales Intelligence Tool (Dashboard + Chatbot)")
 def get_df():
     return load_and_prepare()
 
-df = get_df()
+with st.sidebar:
+    uploaded_file = st.file_uploader("Carica dati CSV/XLSX", type=["csv", "xlsx"])
+
+if uploaded_file is not None:
+    df = load_and_prepare(uploaded_file)
+else:
+    df = get_df()
+
+if df.empty:
+    st.sidebar.warning(
+        "Nessun file di dati trovato. Carica un CSV/XLSX nella sidebar o aggiungi il file nella cartella `data/`."
+    )
+    st.warning(
+        "Nessun dato disponibile al momento. Assicurati di avere un file CSV/XLSX in `data/` oppure caricalo nella sidebar."
+    )
+    st.stop()
 
 # ==============================
 # SIDEBAR FILTERS (SAFE)

@@ -23,3 +23,5 @@ A simple Streamlit app template for you to modify!
    ```
    $ streamlit run streamlit_app.py
    ```
+
+3. If you run the app from Streamlit Cloud or via a URL, make sure your dataset is available in `data/` or upload a CSV/XLSX file in the sidebar.
