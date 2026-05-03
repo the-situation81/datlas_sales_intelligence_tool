@@ -68,11 +68,13 @@ def _normalize_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def load_and_prepare() -> pd.DataFrame:
-    candidates = sorted(glob.glob("*.csv"))
+    candidates = sorted(glob.glob("data/*.csv") + glob.glob("data/*.xlsx"))
     if candidates:
         path = candidates[0]
         if path.lower().endswith(".csv"):
             df = pd.read_csv(path)
+        elif path.lower().endswith(".xlsx"):
+            df = pd.read_excel(path)
         else:
             df = _empty_dataframe()
     else:

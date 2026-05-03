@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 from data_prep import load_and_prepare, kpi_overview
 from chatbot import answer
 
-st.set_page_config(page_title="Datlas Sales Intelligence Tool", layout="wide")
+st.set_page_config(page_title="Datlas Sales Intelligence Tool", layout="centered")
 st.title("Datlas – Sales Intelligence Tool (Dashboard + Chatbot)")
 
 @st.cache_data
