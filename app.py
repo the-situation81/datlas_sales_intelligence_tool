@@ -60,11 +60,11 @@ if df.empty:
 # ==============================
 st.sidebar.header("Filtri")
 
-settori_lista = sorted(df["settore_codice"].dropna().astype(str).unique().tolist())
-lobs_lista = sorted(df["LOB"].dropna().astype(str).unique().tolist())
-teams_lista = sorted(df["team"].dropna().astype(str).unique().tolist())
-servizi_lista = sorted(df["Servizi A&M"].dropna().astype(str).unique().tolist())
-stati_lista = sorted(df["stato"].dropna().astype(str).unique().tolist())
+settori_lista = sorted(df["settore_codice"].dropna().astype(str).str.strip().unique().tolist())
+lobs_lista = sorted(df["LOB"].dropna().astype(str).str.strip().unique().tolist())
+teams_lista = sorted(df["team"].dropna().astype(str).str.strip().unique().tolist())
+servizi_lista = sorted(df["Servizi A&M"].dropna().astype(str).str.strip().unique().tolist())
+stati_lista = sorted(df["stato"].dropna().astype(str).str.strip().unique().tolist())
 
 settori = st.sidebar.multiselect("Industry (settore_codice)", settori_lista, key="settori")
 lobs = st.sidebar.multiselect("LOB", lobs_lista, key="lobs")
@@ -78,15 +78,15 @@ stati = st.sidebar.multiselect("Stato", stati_lista, key="stati")
 fdf = df.copy()
 
 if settori:
-    fdf = fdf[fdf["settore_codice"].astype(str).isin(settori)]
+    fdf = fdf[fdf["settore_codice"].astype(str).str.strip().str.lower().isin([s.lower() for s in settori])]
 if lobs:
-    fdf = fdf[fdf["LOB"].astype(str).isin(lobs)]
+    fdf = fdf[fdf["LOB"].astype(str).str.strip().str.lower().isin([s.lower() for s in lobs])]
 if teams:
-    fdf = fdf[fdf["team"].astype(str).isin(teams)]
+    fdf = fdf[fdf["team"].astype(str).str.strip().str.lower().isin([s.lower() for s in teams])]
 if servizi:
-    fdf = fdf[fdf["Servizi A&M"].astype(str).isin(servizi)]
+    fdf = fdf[fdf["Servizi A&M"].astype(str).str.strip().str.lower().isin([s.lower() for s in servizi])]
 if stati:
-    fdf = fdf[fdf["stato"].astype(str).isin(stati)]
+    fdf = fdf[fdf["stato"].astype(str).str.strip().str.lower().isin([s.lower() for s in stati])]
 
 st.sidebar.write(f"Filtered rows: {len(fdf)}")
 
