@@ -50,6 +50,9 @@ def _map_columns(df: pd.DataFrame) -> pd.DataFrame:
                 break
     df = df.rename(columns=rename_dict)
     return df
+
+
+def _empty_dataframe() -> pd.DataFrame:
     df = pd.DataFrame(
         {
             "settore_codice": pd.Series(dtype="string"),
