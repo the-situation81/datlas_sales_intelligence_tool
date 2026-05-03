@@ -8,6 +8,20 @@ from chatbot import answer
 st.set_page_config(page_title="Datlas Sales Intelligence Tool", layout="centered")
 st.title("Datlas – Sales Intelligence Tool (Dashboard + Chatbot)")
 
+# Initialize session state for filters
+if "settori" not in st.session_state:
+    st.session_state.settori = []
+if "lobs" not in st.session_state:
+    st.session_state.lobs = []
+if "teams" not in st.session_state:
+    st.session_state.teams = []
+if "servizi" not in st.session_state:
+    st.session_state.servizi = []
+if "stati" not in st.session_state:
+    st.session_state.stati = []
+if "filters_reset" not in st.session_state:
+    st.session_state.filters_reset = None
+
 @st.cache_data
 def get_df():
     return load_and_prepare()
@@ -19,7 +33,7 @@ if uploaded_file is not None:
     df = load_and_prepare(uploaded_file)
     st.sidebar.success(f"Caricato: {uploaded_file.name}")
     # Clear filters when new file is uploaded
-    if "filters_reset" not in st.session_state or st.session_state.filters_reset != uploaded_file.name:
+    if st.session_state.filters_reset != uploaded_file.name:
         st.session_state.filters_reset = uploaded_file.name
         st.session_state.settori = []
         st.session_state.lobs = []
@@ -109,13 +123,13 @@ with TAB1:
     st.plotly_chart(
         px.bar(stage.sort_values("n", ascending=False), x="stato", y="n",
                title="Distribuzione opportunità per stato (include Persa/Eliminata)"),
-        use_container_width=True,
+        width='stretch',
     )
 
     st.plotly_chart(
         px.bar(stage, x="stato", y="pipeline_pesata_2026",
                title="Pipeline pesata 2026 (solo stati attivi)"),
-        use_container_width=True,
+        width='stretch',
     )
 
 # ==============================
@@ -137,7 +151,7 @@ with TAB2:
         )
         st.plotly_chart(
             px.imshow(pivot, aspect="auto", title="Fatturato 2026 (venduto) – Industry x LOB"),
-            use_container_width=True
+            width='stretch'
         )
 
         svc = (
@@ -149,7 +163,7 @@ with TAB2:
         fig = px.bar(svc, x="Servizi A&M", y="ricavo_2026",
                      title="Top 15 servizi per fatturato 2026 (venduto)")
         fig.update_layout(xaxis_tickangle=-45)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
 # ==============================
 # TAB 3 – CONCENTRAZIONE
@@ -174,7 +188,7 @@ with TAB3:
         st.plotly_chart(
             px.bar(top10, x="cliente_codice", y="ricavo_2026",
                    title="Top 10 clienti per venduto 2026"),
-            use_container_width=True
+            width='stretch'
         )
 
 # ==============================
@@ -203,7 +217,7 @@ with TAB4:
                 names=["Mono-servizio", "Multi-servizio"],
                 title="Clienti venduti: mono vs multi-servizio",
             ),
-            use_container_width=True
+            width='stretch'
         )
 
         rev = sold.groupby("cliente_codice", as_index=False)["ricavo_2026"].sum()
@@ -217,7 +231,7 @@ with TAB4:
         )
 
         st.write("Candidati cross-selling (euristica): mono-servizio + ricavo ≥ mediana")
-        st.dataframe(cand, use_container_width=True)
+        st.dataframe(cand, width='stretch')
 
 # ==============================
 # TAB 5 – CHATBOT
@@ -230,17 +244,17 @@ with TAB5:
         st.write(res["text"])
 
         if "table" in res:
-            st.dataframe(res["table"], use_container_width=True)
+            st.dataframe(res["table"], width='stretch')
 
         if "chart" in res:
             kind, tab, x, y = res["chart"]
             if kind == "bar":
-                st.plotly_chart(px.bar(tab, x=x, y=y), use_container_width=True)
+                st.plotly_chart(px.bar(tab, x=x, y=y), width='stretch')
             elif kind == "pie":
-                st.plotly_chart(px.pie(tab, names=x, values=y), use_container_width=True)
+                st.plotly_chart(px.pie(tab, names=x, values=y), width='stretch')
             elif kind == "bar_group":
                 fig = go.Figure()
                 for col in y:
                     fig.add_bar(name=col, x=tab[x], y=tab[col])
                 fig.update_layout(barmode="group")
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
