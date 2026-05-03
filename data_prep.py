@@ -1,4 +1,5 @@
 import glob
+import io
 import os
 from typing import Optional
 
@@ -77,10 +78,19 @@ def load_and_prepare(source: Optional[object] = None) -> pd.DataFrame:
 
     if hasattr(source, "read"):
         filename = getattr(source, "name", "").lower()
+        try:
+            source.seek(0)
+        except Exception:
+            pass
+
+        content = source.read()
+        if isinstance(content, str):
+            content = content.encode("utf-8")
+
         if filename.endswith(".csv"):
-            df = pd.read_csv(source)
+            df = pd.read_csv(io.BytesIO(content))
         elif filename.endswith(".xlsx"):
-            df = pd.read_excel(source)
+            df = pd.read_excel(io.BytesIO(content))
         else:
             df = _empty_dataframe()
     else:
