@@ -119,7 +119,17 @@ def load_and_prepare(source: Optional[object] = None) -> pd.DataFrame:
         if filename.endswith(".csv"):
             df = pd.read_csv(io.BytesIO(content))
         elif filename.endswith(".xlsx"):
-            df = pd.read_excel(io.BytesIO(content))
+            # Try to read Excel, check all sheets if first is empty
+            try:
+                xl = pd.ExcelFile(io.BytesIO(content))
+                for sheet in xl.sheet_names:
+                    df = xl.parse(sheet)
+                    if not df.empty:
+                        break
+                else:
+                    df = _empty_dataframe()
+            except Exception:
+                df = _empty_dataframe()
         else:
             df = _empty_dataframe()
     else:
@@ -130,7 +140,17 @@ def load_and_prepare(source: Optional[object] = None) -> pd.DataFrame:
         if path.lower().endswith(".csv"):
             df = pd.read_csv(path)
         elif path.lower().endswith(".xlsx"):
-            df = pd.read_excel(path)
+            # Try to read Excel, check all sheets if first is empty
+            try:
+                xl = pd.ExcelFile(path)
+                for sheet in xl.sheet_names:
+                    df = xl.parse(sheet)
+                    if not df.empty:
+                        break
+                else:
+                    df = _empty_dataframe()
+            except Exception:
+                df = _empty_dataframe()
         else:
             df = _empty_dataframe()
 
