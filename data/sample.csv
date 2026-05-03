@@ -1,0 +1,4 @@
+settore_codice,LOB,team,Servizi A&M,stato,cliente_codice,ricavo_2026,ricavo_2025,pipeline_lorda_2026,pipeline_pesata_2026,is_venduto
+Tech,LOB1,Team A,Analytics,Venduta,CL001,150000,120000,0,0,True
+Finance,LOB2,Team B,Advisory,In Pipeline,CL002,0,0,200000,150000,False
+Retail,LOB1,Team C,Operations,Persa,CL003,0,0,100000,50000,False

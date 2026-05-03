@@ -25,3 +25,5 @@ A simple Streamlit app template for you to modify!
    ```
 
 3. If you run the app from Streamlit Cloud or via a URL, make sure your dataset is available in `data/` or upload a CSV/XLSX file in the sidebar.
+
+A sample dataset is included at `data/sample.csv` so the app can start with working filters and charts even when no custom file is present.
